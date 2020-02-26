@@ -1,8 +1,8 @@
 server {
-	listen 80;
-	root *PATH TO ROOT FOLDER*;
-	server_name *DOMAIN*;
-	return 301 https://$host$request_uri;
+  listen 80;
+  root *PATH TO ROOT FOLDER*;
+  server_name *DOMAIN*;
+  return 301 https://$host$request_uri;
 }
 
 server {
@@ -40,20 +40,20 @@ server {
   # replace with the IP address of your resolver
   resolver 8.8.8.8;
 
-	error_page 502 /public/error/maintenance/index.html;
-	location / {
-		proxy_pass http://localhost:*PORT NUMBER*;
+  error_page 502 /public/error/maintenance/index.html;
+  location / {
+    proxy_pass http://localhost:*PORT NUMBER*;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection 'upgrade';  
     proxy_set_header Host $host;
-		proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
     proxy_cache_bypass $http_upgrade;
-		proxy_intercept_errors on;
-		proxy_pass_request_headers on;
-	}
-  
+    proxy_intercept_errors on;
+    proxy_pass_request_headers on;
+  }
+
   location /public/error/maintenance/index.html{
 
-	}
+  }
 }
