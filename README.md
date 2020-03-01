@@ -1,6 +1,10 @@
 # nginx-nodejs-config-file
 A nginx configuration file for Node.js Apps
 
+## Certbot command
+`sudo certbot certonly --nginx -d DOMAIN`
+
+## Nginx config file
 ```
 server {
   listen 80;
