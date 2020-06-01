@@ -2,7 +2,10 @@
 A nginx configuration file for Node.js Apps
 
 ## Certbot command
-`sudo certbot certonly --nginx -d DOMAIN`
+`sudo certbot certonly --nginx -d domain.com`
+
+## Wildcard Certificate
+`sudo certbot certonly --manual -d *.domain.com -d domain.com --preferred-challenges dns`
 
 ## Nginx config file
 ```
