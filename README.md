@@ -1,13 +1,42 @@
-# nginx-nodejs-config-file
-A nginx configuration file for Node.js Apps
+# nginx-certbot
+A nginx configuration file to use with Let's Encrypt HTTPS certificates.
 
-## Certbot command
-`sudo certbot certonly --nginx -d domain.com`
+## Install Certbot
 
-## Wildcard Certificate
+Add repository:
+
+`sudo add-apt-repository ppa:certbot/certbot`
+
+Update package list:
+
+`sudo apt update`
+
+Install certbot nginx package:
+
+`sudo apt-get install python-certbot-nginx`
+
+## Certbot commands
+
+Generate certificate for one or more domains:
+
+`sudo certbot certonly --nginx -d domain.com -d www.domain.com`
+
+Generate wildcard certificate:
+
 `sudo certbot certonly --manual -d *.domain.com -d domain.com --preferred-challenges dns`
 
-## Nginx config file
+> Note: You will need to add two TXT records in your DNS for the acme-challenge
+
+Renew all certificates:
+
+`sudo certbot renew`
+
+> Note: Only works for none wildcard certificates
+
+## Nginx
+
+### Config file
+
 ```
 server {
   listen 80;
@@ -23,35 +52,27 @@ server {
   root *PATH TO ROOT FOLDER*;
   server_name *DOMAIN*;
 
-  # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
   ssl_certificate /etc/letsencrypt/live/*DOMAIN*/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/*DOMAIN*/privkey.pem;
   ssl_session_timeout 1d;
   ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
   ssl_session_tickets off;
 
-  # curl https://ssl-config.mozilla.org/ffdhe2048.txt > /path/to/dhparam.pem
   ssl_dhparam /etc/letsencrypt/dhparam.pem;
 
-  # intermediate configuration
   ssl_protocols TLSv1.2 TLSv1.3;
   ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
   ssl_prefer_server_ciphers on;
 
-  # HSTS (ngx_http_headers_module is required) (63072000 seconds)
   add_header Strict-Transport-Security "max-age=63072000" always;
 
-  # OCSP stapling
   ssl_stapling on;
   ssl_stapling_verify on;
 
-  # verify chain of trust of OCSP response using Root CA and Intermediate certs
   ssl_trusted_certificate /etc/letsencrypt/live/*DOMAIN*/chain.pem;
 
-  # replace with the IP address of your resolver
   resolver 8.8.8.8;
 
-  error_page 502 /public/error/maintenance/index.html;
   location / {
     proxy_pass http://localhost:*PORT NUMBER*;
     proxy_http_version 1.1;
@@ -63,9 +84,15 @@ server {
     proxy_intercept_errors on;
     proxy_pass_request_headers on;
   }
-
-  location /public/error/maintenance/index.html{
-
-  }
 }
 ```
+
+### Commands
+
+Verify config:
+
+`sudo nginx -t`
+
+Restart nginx:
+
+`sudo service restart nginx`
