@@ -1,7 +1,8 @@
 # nginx-certbot
 A nginx configuration file to use with Let's Encrypt HTTPS certificates.
 
-## Install Certbot
+## Certbot
+### Install Certbot
 
 Add repository:
 
@@ -15,7 +16,7 @@ Install certbot nginx package:
 
 `sudo apt-get install python-certbot-nginx`
 
-## Certbot commands
+### Certbot commands
 
 Generate certificate for one or more domains:
 
@@ -32,6 +33,20 @@ Renew all certificates:
 `sudo certbot renew`
 
 > Note: Only works for none wildcard certificates
+
+## Firewall
+
+View current settings:
+
+`sudo ufw status`
+
+Run:
+
+`sudo ufw allow 'Nginx Full'`
+
+and
+
+`sudo ufw delete allow 'Nginx HTTP'`
 
 ## Nginx
 
